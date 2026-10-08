@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>ShopSphere</title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+</head>
+
+<body>
+
+
+<nav class="navbar">
+
+    <div class="logo">
+        ShopSphere
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/products.html">
+            Products
+        </a>
+
+        <a href="/cart.html">
+            Cart
+        </a>
+
+        <a href="/orders.html">
+            My Orders
+        </a>
+
+        <a href="/login.html"
+           id="loginLink">
+            Login
+        </a>
+
+        <a href="/register.html"
+           id="registerLink">
+            Register
+        </a>
+
+        <a href="/admin.html"
+           id="adminLink"
+           style="display:none;">
+            Admin
+        </a>
+
+        <button
+            class="btn btn-danger"
+            id="logoutButton"
+            onclick="logout()"
+            style="display:none;">
+
+            Logout
+
+        </button>
+
+    </div>
+
+</nav>
+
+
+<section class="hero">
+
+    <h1>Welcome to ShopSphere</h1>
+
+    <p>
+        Discover products, add them to your cart
+        and shop easily with ShopSphere.
+    </p>
+
+    <a href="/products.html"
+       class="btn">
+
+        Start Shopping
+
+    </a>
+
+</section>
+
+
+<footer class="footer">
+
+    <p>
+        © 2026 ShopSphere
+    </p>
+
+</footer>
+
+
+<script>
+
+function checkLogin() {
+
+    const token =
+        localStorage.getItem("token");
+
+    const role =
+        localStorage.getItem("role");
+
+
+    if (token) {
+
+        document.getElementById("loginLink")
+            .style.display = "none";
+
+        document.getElementById("registerLink")
+            .style.display = "none";
+
+        document.getElementById("logoutButton")
+            .style.display = "inline-block";
+
+
+        if (role === "ADMIN") {
+
+            document.getElementById("adminLink")
+                .style.display = "inline-block";
+        }
+    }
+}
+
+
+function logout() {
+
+    localStorage.removeItem("token");
+
+    localStorage.removeItem("userId");
+
+    localStorage.removeItem("role");
+
+    localStorage.removeItem("selectedOrderId");
+
+
+    alert("Logged out successfully");
+
+
+    window.location.href =
+        "/login.html";
+}
+
+
+checkLogin();
+
+</script>
+
+
+</body>
+
+</html>

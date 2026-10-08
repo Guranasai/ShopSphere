@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Cart - ShopSphere</title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">ShopSphere</div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/products.html">Products</a>
+        <a href="/cart.html">Cart</a>
+        <a href="/orders.html">My Orders</a>
+    </div>
+
+</nav>
+
+
+<div class="page-container">
+
+    <h1 class="page-title">My Cart</h1>
+
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Item ID</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="cartTable">
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <p id="message"
+       class="message"></p>
+
+
+    <div class="cart-summary">
+
+        <h2>
+            Total: ₹<span id="cartTotal">0</span>
+        </h2>
+
+    </div>
+
+
+    <div class="cart-actions">
+
+        <a href="/products.html"
+           class="btn">
+            Continue Shopping
+        </a>
+
+        <a href="/checkout.html"
+           class="btn">
+            Checkout
+        </a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const token =
+    localStorage.getItem("token");
+
+const userId =
+    localStorage.getItem("userId");
+
+
+if (!token || !userId) {
+
+    window.location.href =
+        "/login.html";
+
+}
+
+
+function loadCart() {
+
+    fetch(`/api/cart/${userId}/items`, {
+
+        method: "GET",
+
+        headers: {
+            "Authorization":
+                "Bearer " + token
+        }
+
+    })
+
+    .then(response => {
+
+        if (!response.ok) {
+            throw new Error(
+                "Unable to load cart"
+            );
+        }
+
+        return response.json();
+
+    })
+
+    .then(items => {
+
+        const table =
+            document.getElementById(
+                "cartTable"
+            );
+
+        table.innerHTML = "";
+
+        let total = 0;
+
+
+        if (items.length === 0) {
+
+            document.getElementById("message")
+                .textContent =
+                "Your cart is empty";
+
+        } else {
+
+            document.getElementById("message")
+                .textContent = "";
+
+        }
+
+
+        items.forEach(item => {
+
+            const subtotal =
+                item.product.price *
+                item.quantity;
+
+            total += subtotal;
+
+
+            table.innerHTML += `
+
+                <tr>
+
+                    <td>${item.id}</td>
+
+                    <td>
+                        ${item.product.name}
+                    </td>
+
+                    <td>
+                        ₹${item.product.price}
+                    </td>
+
+                    <td>
+
+                        <input
+                            class="quantity-input"
+                            type="number"
+                            id="quantity-${item.id}"
+                            value="${item.quantity}"
+                            min="1">
+
+                    </td>
+
+                    <td>
+                        ₹${subtotal}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn btn-small btn-update"
+                            onclick="updateQuantity(${item.id})">
+
+                            Update
+
+                        </button>
+
+
+                        <button
+                            class="btn btn-small btn-remove"
+                            onclick="removeItem(${item.id})">
+
+                            Remove
+
+                        </button>
+
+                    </td>
+
+                </tr>
+            `;
+
+        });
+
+
+        document.getElementById(
+            "cartTotal"
+        ).textContent = total;
+
+    })
+
+    .catch(error => {
+
+        document.getElementById("message")
+            .textContent =
+            error.message;
+
+    });
+
+}
+
+
+function updateQuantity(cartItemId) {
+
+    const quantity =
+        document.getElementById(
+            `quantity-${cartItemId}`
+        ).value;
+
+
+    fetch(
+        `/api/cart/${userId}/update/${cartItemId}/${quantity}`,
+        {
+
+            method: "PUT",
+
+            headers: {
+                "Authorization":
+                    "Bearer " + token
+            }
+
+        }
+    )
+
+    .then(response => {
+
+        if (!response.ok) {
+            throw new Error(
+                "Unable to update quantity"
+            );
+        }
+
+        return response.json();
+
+    })
+
+    .then(() => {
+
+        alert("Quantity updated");
+
+        loadCart();
+
+    })
+
+    .catch(error => {
+
+        alert(error.message);
+
+    });
+
+}
+
+
+function removeItem(cartItemId) {
+
+    if (!confirm(
+        "Remove this product from cart?"
+    )) {
+        return;
+    }
+
+
+    fetch(
+        `/api/cart/${userId}/remove/${cartItemId}`,
+        {
+
+            method: "DELETE",
+
+            headers: {
+                "Authorization":
+                    "Bearer " + token
+            }
+
+        }
+    )
+
+    .then(response => {
+
+        if (!response.ok) {
+            throw new Error(
+                "Unable to remove item"
+            );
+        }
+
+        return response.text();
+
+    })
+
+    .then(() => {
+
+        alert("Item removed");
+
+        loadCart();
+
+    })
+
+    .catch(error => {
+
+        alert(error.message);
+
+    });
+
+}
+
+
+loadCart();
+
+</script>
+
+</body>
+</html>

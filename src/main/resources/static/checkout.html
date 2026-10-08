@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Checkout - ShopSphere</title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">ShopSphere</div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/products.html">Products</a>
+        <a href="/cart.html">Cart</a>
+        <a href="/orders.html">My Orders</a>
+    </div>
+
+</nav>
+
+
+<div class="page-container">
+
+    <h1 class="page-title">
+        Checkout
+    </h1>
+
+
+    <div class="checkout-card">
+
+        <h2>Ready to place your order?</h2>
+
+        <p>
+            Your cart products will be added
+            to a new order.
+        </p>
+
+
+        <div class="checkout-actions">
+
+            <a href="/cart.html"
+               class="btn">
+
+                Back to Cart
+
+            </a>
+
+
+            <button
+                class="btn"
+                id="placeOrderButton"
+                onclick="createOrder()">
+
+                Place Order
+
+            </button>
+
+        </div>
+
+
+        <p id="message"
+           class="message"></p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const token =
+    localStorage.getItem("token");
+
+const userId =
+    localStorage.getItem("userId");
+
+
+if (!token || !userId) {
+
+    window.location.href =
+        "/login.html";
+
+}
+
+
+async function createOrder() {
+
+    const message =
+        document.getElementById("message");
+
+    const button =
+        document.getElementById(
+            "placeOrderButton"
+        );
+
+
+    try {
+
+        button.disabled = true;
+
+        message.textContent =
+            "Placing your order...";
+
+
+        // Get cart items
+
+        const cartResponse =
+            await fetch(
+                `/api/cart/${userId}/items`,
+                {
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+
+        if (!cartResponse.ok) {
+            throw new Error(
+                "Unable to load cart"
+            );
+        }
+
+
+        const cartItems =
+            await cartResponse.json();
+
+
+        if (cartItems.length === 0) {
+
+            message.textContent =
+                "Your cart is empty";
+
+            button.disabled = false;
+
+            return;
+        }
+
+
+        // Create order
+
+        const orderResponse =
+            await fetch(
+                "/api/orders",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json",
+
+                        "Authorization":
+                            "Bearer " + token
+
+                    },
+
+                    body: JSON.stringify({
+
+                        userId:
+                            Number(userId),
+
+                        status:
+                            "PLACED"
+
+                    })
+
+                }
+            );
+
+
+        if (!orderResponse.ok) {
+
+            throw new Error(
+                "Unable to create order"
+            );
+
+        }
+
+
+        const order =
+            await orderResponse.json();
+
+
+        // Add each cart item to order
+
+        for (const item of cartItems) {
+
+            const itemResponse =
+                await fetch(
+                    "/api/order-items",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json",
+
+                            "Authorization":
+                                "Bearer " + token
+
+                        },
+
+                        body: JSON.stringify({
+
+                            orderId:
+                                order.id,
+
+                            productId:
+                                item.product.id,
+
+                            quantity:
+                                item.quantity
+
+                        })
+
+                    }
+                );
+
+
+            if (!itemResponse.ok) {
+
+                throw new Error(
+                    "Unable to add order item"
+                );
+
+            }
+        }
+
+
+        // Clear cart
+
+        for (const item of cartItems) {
+
+            const deleteResponse =
+                await fetch(
+                    `/api/cart/${userId}/remove/${item.id}`,
+                    {
+
+                        method: "DELETE",
+
+                        headers: {
+
+                            "Authorization":
+                                "Bearer " + token
+
+                        }
+
+                    }
+                );
+
+
+            if (!deleteResponse.ok) {
+
+                throw new Error(
+                    "Order created, but cart could not be cleared"
+                );
+
+            }
+        }
+
+
+        message.textContent =
+            "Order placed successfully! Order ID: "
+            + order.id;
+
+
+        button.style.display =
+            "none";
+
+
+    }
+    catch (error) {
+
+        message.textContent =
+            error.message;
+
+        button.disabled = false;
+
+    }
+}
+
+</script>
+
+</body>
+</html>

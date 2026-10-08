@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Order Details - ShopSphere</title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+</head>
+
+<body>
+
+
+<nav class="navbar">
+
+    <div class="logo">
+        ShopSphere
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/">Home</a>
+
+        <a href="/products.html">
+            Products
+        </a>
+
+        <a href="/cart.html">
+            Cart
+        </a>
+
+        <a href="/orders.html">
+            My Orders
+        </a>
+
+    </div>
+
+</nav>
+
+
+<div class="page-container">
+
+    <h1 class="page-title">
+        Order Details
+    </h1>
+
+
+    <div class="order-card">
+
+        <h2>Order Information</h2>
+
+        <div
+            class="order-info"
+            id="orderInfo">
+
+        </div>
+
+    </div>
+
+
+    <h2>Products</h2>
+
+    <br>
+
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Product ID</th>
+
+                    <th>Product</th>
+
+                    <th>Price</th>
+
+                    <th>Quantity</th>
+
+                    <th>Subtotal</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="itemTable">
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <div class="order-total">
+
+        <strong>
+            Total: ₹<span id="totalAmount">0</span>
+        </strong>
+
+    </div>
+
+
+    <p id="message"
+       class="message"></p>
+
+
+    <br>
+
+
+    <a href="/orders.html"
+       class="btn">
+
+        Back to My Orders
+
+    </a>
+
+</div>
+
+
+<script>
+
+const token =
+    localStorage.getItem("token");
+
+const orderId =
+    localStorage.getItem(
+        "selectedOrderId"
+    );
+
+
+if (!token) {
+
+    window.location.href =
+        "/login.html";
+
+}
+
+
+if (!orderId) {
+
+    document.getElementById(
+        "message"
+    ).textContent =
+        "Order ID not found";
+
+}
+else {
+
+    loadOrderDetails();
+
+}
+
+
+function loadOrderDetails() {
+
+    fetch(`/api/orders/${orderId}`, {
+
+        method: "GET",
+
+        headers: {
+
+            "Authorization":
+                "Bearer " + token
+
+        }
+
+    })
+
+    .then(response => {
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load order details"
+            );
+
+        }
+
+        return response.json();
+
+    })
+
+    .then(order => {
+
+
+        document.getElementById(
+            "orderInfo"
+        ).innerHTML = `
+
+            <p>
+                <strong>Order ID</strong>
+                #${order.orderId}
+            </p>
+
+            <p>
+                <strong>Status</strong>
+                ${order.status}
+            </p>
+
+            <p>
+                <strong>Customer</strong>
+                ${order.userName}
+            </p>
+        `;
+
+
+        document.getElementById(
+            "totalAmount"
+        ).textContent =
+            order.totalAmount;
+
+
+        const table =
+            document.getElementById(
+                "itemTable"
+            );
+
+        table.innerHTML = "";
+
+
+        order.items.forEach(item => {
+
+            table.innerHTML += `
+
+                <tr>
+
+                    <td>
+                        ${item.productId}
+                    </td>
+
+                    <td>
+                        ${item.productName}
+                    </td>
+
+                    <td>
+                        ₹${item.price}
+                    </td>
+
+                    <td>
+                        ${item.quantity}
+                    </td>
+
+                    <td>
+                        ₹${item.subtotal}
+                    </td>
+
+                </tr>
+            `;
+
+        });
+
+    })
+
+    .catch(error => {
+
+        document.getElementById(
+            "message"
+        ).textContent =
+            error.message;
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>

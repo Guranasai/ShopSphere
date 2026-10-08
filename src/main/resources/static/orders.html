@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Orders - ShopSphere</title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">ShopSphere</div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/products.html">Products</a>
+        <a href="/cart.html">Cart</a>
+        <a href="/orders.html">My Orders</a>
+    </div>
+
+</nav>
+
+
+<div class="page-container">
+
+    <h1 class="page-title">
+        My Orders
+    </h1>
+
+
+    <div class="orders-actions">
+
+        <button
+            class="btn"
+            onclick="loadOrders()">
+
+            Refresh Orders
+
+        </button>
+
+    </div>
+
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Status</th>
+                    <th>Total Amount</th>
+                    <th>Created At</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="orderTable">
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <p id="message"
+       class="message"></p>
+
+</div>
+
+
+<script>
+
+const token =
+    localStorage.getItem("token");
+
+
+if (!token) {
+
+    window.location.href =
+        "/login.html";
+
+}
+
+
+function loadOrders() {
+
+    fetch("/api/orders/my-orders", {
+
+        method: "GET",
+
+        headers: {
+
+            "Authorization":
+                "Bearer " + token
+
+        }
+
+    })
+
+    .then(response => {
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load orders"
+            );
+
+        }
+
+        return response.json();
+
+    })
+
+    .then(orders => {
+
+        const table =
+            document.getElementById(
+                "orderTable"
+            );
+
+        table.innerHTML = "";
+
+
+        if (orders.length === 0) {
+
+            document.getElementById(
+                "message"
+            ).textContent =
+                "No orders found";
+
+            return;
+
+        }
+
+
+        document.getElementById(
+            "message"
+        ).textContent = "";
+
+
+        orders.forEach(order => {
+
+            table.innerHTML += `
+
+                <tr>
+
+                    <td>
+                        #${order.id}
+                    </td>
+
+                    <td>
+
+                        <span class="order-status">
+
+                            ${order.status}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+                        ₹${order.totalAmount}
+                    </td>
+
+                    <td>
+                        ${formatDate(order.createdAt)}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn btn-small"
+                            onclick="viewOrder(${order.id})">
+
+                            View Details
+
+                        </button>
+
+                    </td>
+
+                </tr>
+            `;
+
+        });
+
+    })
+
+    .catch(error => {
+
+        document.getElementById(
+            "message"
+        ).textContent =
+            error.message;
+
+    });
+}
+
+
+function viewOrder(orderId) {
+
+    localStorage.setItem(
+        "selectedOrderId",
+        orderId
+    );
+
+    window.location.href =
+        "/order-details.html";
+}
+
+
+function formatDate(date) {
+
+    if (!date) {
+        return "-";
+    }
+
+    return new Date(date)
+        .toLocaleString();
+
+}
+
+
+loadOrders();
+
+</script>
+
+</body>
+</html>

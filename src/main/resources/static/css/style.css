@@ -1,0 +1,430 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f6fa;
+    color: #222;
+}
+
+/* Navbar */
+
+.navbar {
+    background-color: #1f2937;
+    color: white;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 18px 8%;
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+/* Main Home Section */
+
+.hero {
+    min-height: 70vh;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    padding: 40px 20px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    font-size: 19px;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* Buttons */
+
+.btn {
+    display: inline-block;
+
+    padding: 12px 22px;
+
+    border: none;
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    text-decoration: none;
+
+    font-size: 16px;
+
+    background-color: #2563eb;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn-danger {
+    background-color: #dc2626;
+}
+
+/* Footer */
+
+.footer {
+    text-align: center;
+    padding: 20px;
+
+    background-color: #1f2937;
+    color: white;
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .hero h1 {
+        font-size: 36px;
+    }
+}
+
+/* Authentication Pages */
+
+.auth-container {
+    min-height: 80vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 30px 20px;
+}
+
+.auth-card {
+    background-color: white;
+
+    width: 100%;
+    max-width: 420px;
+
+    padding: 35px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 4px 15px
+                rgba(0, 0, 0, 0.1);
+}
+
+.auth-card h2 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+
+    padding: 11px;
+
+    border: 1px solid #ccc;
+    border-radius: 5px;
+
+    font-size: 15px;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.auth-card .btn {
+    width: 100%;
+}
+
+.auth-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.auth-link a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.auth-link a:hover {
+    text-decoration: underline;
+}
+
+.message {
+    text-align: center;
+    margin-top: 15px;
+}
+
+
+/* Page Layout */
+
+.page-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+.page-title {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+
+/* Tables */
+
+.table-container {
+    overflow-x: auto;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #1f2937;
+    color: white;
+}
+
+th,
+td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+    background-color: #f3f4f6;
+}
+
+
+/* Small Button */
+
+.btn-small {
+    padding: 8px 14px;
+    font-size: 14px;
+}
+
+/* Cart */
+
+.cart-summary {
+    margin-top: 25px;
+    text-align: right;
+}
+
+.quantity-input {
+    width: 70px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.btn-update {
+    background-color: #16a34a;
+}
+
+.btn-remove {
+    background-color: #dc2626;
+}
+
+.cart-actions {
+    margin-top: 25px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+/* Checkout */
+
+.checkout-card {
+    background-color: white;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 35px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.checkout-card h2 {
+    margin-bottom: 15px;
+}
+
+.checkout-card p {
+    color: #555;
+    margin-bottom: 25px;
+}
+
+.checkout-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* Orders */
+
+.order-status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background-color: #dcfce7;
+    font-weight: bold;
+}
+
+.orders-actions {
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+/* Order Details */
+
+.order-card {
+    background-color: white;
+    padding: 25px;
+    margin-bottom: 25px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 4px 15px
+                rgba(0, 0, 0, 0.08);
+}
+
+.order-card h2 {
+    margin-bottom: 20px;
+}
+
+.order-info {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(180px, 1fr));
+
+    gap: 20px;
+}
+
+.order-info p {
+    color: #555;
+}
+
+.order-info strong {
+    display: block;
+    color: #222;
+    margin-bottom: 5px;
+}
+
+.order-total {
+    text-align: right;
+    margin-top: 25px;
+    font-size: 20px;
+}
+
+
+/* Admin Dashboard */
+
+.admin-section {
+    background-color: white;
+    padding: 25px;
+    margin-bottom: 35px;
+    border-radius: 10px;
+
+    box-shadow: 0 4px 15px
+                rgba(0, 0, 0, 0.08);
+}
+
+.admin-section h2 {
+    margin-bottom: 20px;
+}
+
+.product-form {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(180px, 1fr));
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+.product-form input {
+    padding: 11px;
+
+    border: 1px solid #ccc;
+    border-radius: 5px;
+
+    font-size: 15px;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-edit {
+    background-color: #f59e0b;
+}
+
+.btn-delete {
+    background-color: #dc2626;
+}
+
+.admin-heading {
+    margin-bottom: 30px;
+}
